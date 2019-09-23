@@ -5,6 +5,7 @@
 .metadata
 bin/
 classes/
+target/
 tmp/
 *.tmp
 *.bak
