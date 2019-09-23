@@ -1,22 +1,39 @@
 # authorizer
 
-A Clojure library designed to ... well, that part is up to you.
+This application is responsible for reading a file with json lines from stdin, 
+representing account transaction commands, processing them, and printing the 
+partial status of the account.
 
 ## Usage
+#### Running for the example file
+To run the application, one can have Docker installed and type
+```shell script 
+docker build -t authorizer . 
+```
+And then
+```shell script 
+docker run -p 3000:3000 authorizer
+```
+This will run the `operations` file located in the `json` folder.
 
-FIXME
+#### Running with a different file
+To run a different commands file, one can copy it to the `json` folder, remembering to
+rename it to `operations` or changing the name in the Dockerfile and then re-running the above
+docker commands.
 
-## License
+Another option is to copy the file to the `json` folder, re-running only the `docker build`
+and running docker run as follows:
+``` 
+docker run -p 3000:3000 -it authorizer /bin/bash 
+```
+Once inside the docker container, one can type
+```shell script
+lein run < [filename]
+```
 
-Copyright © 2019 FIXME
+## Project Structure
 
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
-
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
+This project was developed in Clojure. The structure is basically separated in 3 namespaces:
+- core: contains the main project login, as well as account structure creation and altering
+- rules: contains the business logic, aka transaction authorization/denial rules
+- utils: contains utilitary functions such as json handling and printing functions
