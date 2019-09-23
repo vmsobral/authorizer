@@ -1,21 +1,37 @@
 (ns authorizer.core
   (:require [authorizer.rules :as rules])
-  (:require [authorizer.utils :as utils]))
+  (:require [authorizer.utils :as utils])
+  (:import (java.io BufferedReader)))
 
-(defn -main []
-  (let [accountJson (:account (utils/readCommand (read-line)))]
-    (def account
-      {:activeCard     (accountJson :activeCard)
-       :availableLimit (atom (accountJson :availableLimit))
-       :violations     (atom [])}))
-  (utils/printStatus account)
 
+(defn initAccount
+  "initializes account"
+  [account accountJson]
+  (swap! account assoc :init true)
+  (swap! account assoc :activeCard (:activeCard accountJson))
+  (swap! account assoc :availableLimit (atom (:availableLimit accountJson)))
+  (swap! account assoc :violations (atom []))
+  )
+
+(defn processTransaction
+  "validates and processes transaction"
+  [account jsonEntry history]
+  (rules/checkForViolations account jsonEntry history)
+  (if (= @(:violations account) [])
+    (let [transaction (:transaction jsonEntry)]
+      (swap! (:availableLimit account) - (:amount transaction))
+      (swap! history conj transaction))))
+
+(defn -main [& args]
+  (def account (atom {:init false}))
   (def history (atom []))
-  (loop [entry (read-line)]
-    (if-not (= ":done" entry)
-      (let [jsonEntry (utils/readCommand entry)]
-        (rules/checkForViolations account jsonEntry history)
-        (if (= @(:violations account) [])
-          (swap! (:availableLimit account) - (:amount (:transaction jsonEntry))))
-        (utils/printStatus account)
-        (recur (read-line))))))
+  (with-open [rdr (BufferedReader. *in*)]
+    (doseq [line (line-seq rdr)]
+
+      (let [jsonEntry (utils/readCommand line)]
+        (if-not (:init @account)
+          (initAccount account (:account jsonEntry))
+          (processTransaction @account jsonEntry history))
+        (utils/printStatus @account)
+        (reset! (:violations @account) [])
+        ))))
