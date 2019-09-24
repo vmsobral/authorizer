@@ -42,3 +42,7 @@ This project was developed in Clojure. The structure is basically separated in 3
 - core: contains the main project login, as well as account structure creation and altering
 - rules: contains the business logic, aka transaction authorization/denial rules
 - utils: contains utilitary functions such as json handling and printing functions
+## Project Decisions
+- It is assumed that the first line of every json file is an account initialization command
+- It is assumed that for each command the violations printed are specific of that command, 
+i.e. violations are not printed in a cumulative way.
