@@ -7,11 +7,11 @@ partial status of the account.
 ## Usage
 #### Running for the example file
 To run the application, one can have Docker installed and type
-```shell script 
+```shell script
 docker build -t authorizer . 
 ```
 And then
-```shell script 
+```shell script
 docker run -p 3000:3000 authorizer
 ```
 This will run the `operations` file located in the `json` folder.
@@ -23,7 +23,7 @@ docker commands.
 
 Another option is to copy the file to the `json` folder, re-running only the `docker build`
 and running docker run as follows:
-``` 
+```shell script
 docker run -p 3000:3000 -it authorizer /bin/bash 
 ```
 Once inside the docker container, one can type
@@ -31,6 +31,11 @@ Once inside the docker container, one can type
 lein run < [filename]
 ```
 
+#### Run tests
+Inside docker container, run:
+```shell script
+lein test
+```
 ## Project Structure
 
 This project was developed in Clojure. The structure is basically separated in 3 namespaces:
