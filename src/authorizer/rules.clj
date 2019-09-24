@@ -18,7 +18,7 @@
       true)))
 
 (defn isTimeAllowed
-  "checks if there is more than 3 transactions on a 2 minute interval"
+  "checks if there is more than 3 transactions on a 2 minute interval (including actual)"
   [twoMinutesHistory]
   (< (count twoMinutesHistory) 3))
 
